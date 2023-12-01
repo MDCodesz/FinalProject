@@ -7,12 +7,12 @@
     tools:context=".NewListItemActivity">
 
     <EditText
-        android:id="@+id/editTextText3"
+        android:id="@+id/editText1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="text"
-        android:text="Item Name"
+        android:hint="Item Name"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.442"
@@ -20,13 +20,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.23" />
 
+
     <EditText
-        android:id="@+id/editTextText4"
+        android:id="@+id/editTextNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="text"
-        android:text="Price"
+        android:inputType="numberDecimal"
+        android:hint="Price"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.442"
@@ -35,7 +36,7 @@
         app:layout_constraintVertical_bias="0.361" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Submit Item"
