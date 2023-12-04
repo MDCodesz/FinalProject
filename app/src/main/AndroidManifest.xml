@@ -15,6 +15,12 @@
         android:theme="@style/Theme.FinalProject"
         tools:targetApi="31">
         <activity
+            android:name=".BasketRecyclerAdapter"
+            android:exported="false" />
+        <activity
+            android:name=".BasketActivity"
+            android:exported="false" />
+        <activity
             android:name=".ShoppingListManagementActivity"
             android:exported="false" />
         <activity

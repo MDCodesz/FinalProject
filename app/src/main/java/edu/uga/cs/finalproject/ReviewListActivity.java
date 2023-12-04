@@ -32,7 +32,7 @@ import java.util.List;
 public class ReviewListActivity
         extends AppCompatActivity
         implements AddListItemDialogFragment.AddListItemDialogListener,
-        EditListItemDialogFragment.EditListItemDialogListener {
+        EditListItemDialogFragment.EditListItemDialogListener, ListItemRecyclerAdapter.OnItemClickListener {
 
     public static final String DEBUG_TAG = "ReviewListActivity";
 
@@ -40,6 +40,7 @@ public class ReviewListActivity
     private ListItemRecyclerAdapter recyclerAdapter;
 
     private List<ListItem> itemsList;
+    private List<Integer> selectedPositions = new ArrayList<>();
 
     private FirebaseDatabase database;
 
@@ -72,6 +73,9 @@ public class ReviewListActivity
         // the recycler adapter with job leads is empty at first; it will be updated later
         recyclerAdapter = new ListItemRecyclerAdapter( itemsList, ReviewListActivity.this );
         recyclerView.setAdapter( recyclerAdapter );
+
+        //testing for add to basket purposees
+        recyclerAdapter.setOnItemClickListener(this);
 
         // get a Firebase DB instance reference
         database = FirebaseDatabase.getInstance();
@@ -106,6 +110,69 @@ public class ReviewListActivity
                 System.out.println( "ValueEventListener: reading failed: " + databaseError.getMessage() );
             }
         } );
+    }
+    //tying out for add to basket button
+    @Override
+    public void onAddToBasketClick(int position) {
+        //ListItem item = itemsList.get(position);
+        //to get item IDs
+        //String itemName =
+        //get the item from the adapter based on the position ;
+        //addToBasket(item);
+        if (selectedPositions.contains(position)) {
+            selectedPositions.remove(Integer.valueOf(position));
+        } else {
+            selectedPositions.add(position);
+            addSelectedItemsToBasket();
+        }
+
+    }
+    private void addSelectedItemsToBasket() {
+        List<ListItem> selectedItems = getSelectedItems();
+
+        if (!selectedItems.isEmpty()) {
+            List<String> itemIds = getItemIds(selectedItems);
+            addToBasket(itemIds, selectedItems);
+        }
+    }
+    private List<String> getItemIds(List<ListItem> items) {
+        List<String> itemIds = new ArrayList<>();
+
+        for (ListItem item : items) {
+            String itemId = item.getKey(); // Replace with the actual method to get the item ID
+            itemIds.add(itemId);
+        }
+
+        return itemIds;
+    }
+    // Function to add an item to the basket
+    private void addToBasket(List<String> itemIds, List<ListItem> items) {
+        // Assuming userUid and itemId are known
+        //DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userUid);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("ShoppingBasket");
+        for(int i = 0; i < itemIds.size(); i++ ) {
+            String itemId = itemIds.get(i);
+            ListItem item = items.get(i);
+
+            // Remove from shopping list
+            myRef.child("itemlists").child(itemId).removeValue();
+
+            // Add to shopping basket
+            myRef.child("ShoppingBasket").setValue(item);
+        }
+    }
+    private List<ListItem> getSelectedItems() {
+        List<ListItem> selectedItems = new ArrayList<>();
+
+        for (int position : selectedPositions) {
+            if (position >= 0 && position < recyclerAdapter.getItemCount()) {
+                ListItem item = itemsList.get(position);
+                selectedItems.add(item);
+            }
+        }
+
+        return selectedItems;
     }
 
     // this is our own callback for a AddListItemDialogFragment which adds a new job lead.

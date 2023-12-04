@@ -1,23 +1,21 @@
 package edu.uga.cs.finalproject;
-
-
 /**
- * This class represents a single job lead, including the company name,
+ * This class represents a single basket list item, including the company name,
  * price number, URL, and some comments.
  */
-public class ListItem {
+public class BasketListItem {
     private String key;
     private String itemName;
     private double price;
 
-    public ListItem()
+    public BasketListItem()
     {
         this.key = null;
         this.itemName = null;
         this.price = 0.0;
     }
 
-    public ListItem( String itemName, double price) {
+    public BasketListItem( String itemName, double price) {
         this.key = null;
         this.itemName = itemName;
         this.price = price;
@@ -50,5 +48,4 @@ public class ListItem {
     public String toString() {
         return itemName + " " + price;
     }
-
 }
