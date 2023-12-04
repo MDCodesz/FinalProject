@@ -21,6 +21,9 @@
             android:name=".BasketActivity"
             android:exported="false" />
         <activity
+            android:name=".PurchasedListActivity"
+            android:exported="false" />
+        <activity
             android:name=".ShoppingListManagementActivity"
             android:exported="false" />
         <activity

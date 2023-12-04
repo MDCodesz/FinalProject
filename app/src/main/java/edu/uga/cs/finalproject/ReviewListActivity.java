@@ -26,8 +26,8 @@ import java.util.List;
 
 
 /**
- * This is an activity class for listing the current job leads.
- * The current job leads are listed as a RecyclerView.
+ * This is an activity class for listing the currentlist items.
+ * The currentlist items are listed as a RecyclerView.
  */
 public class ReviewListActivity
         extends AppCompatActivity
@@ -70,7 +70,7 @@ public class ReviewListActivity
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        // the recycler adapter with job leads is empty at first; it will be updated later
+        // the recycler adapter withlist items is empty at first; it will be updated later
         recyclerAdapter = new ListItemRecyclerAdapter( itemsList, ReviewListActivity.this );
         recyclerView.setAdapter( recyclerAdapter );
 
@@ -86,12 +86,12 @@ public class ReviewListActivity
         // and then each time the value at Firebase changes.
         //
         // This listener will be invoked asynchronously, hence no need for an AsyncTask class, as in the previous apps
-        // to maintain job leads.
+        // to maintainlist items.
         myRef.addValueEventListener( new ValueEventListener() {
 
             @Override
             public void onDataChange( @NonNull DataSnapshot snapshot ) {
-                // Once we have a DataSnapshot object, we need to iterate over the elements and place them on our job lead list.
+                // Once we have a DataSnapshot object, we need to iterate over the elements and place them on ourlist item list.
                 itemsList.clear(); // clear the current content; this is inefficient!
                 for( DataSnapshot postSnapshot: snapshot.getChildren() ) {
                     ListItem ListItem = postSnapshot.getValue(ListItem.class);
@@ -175,18 +175,18 @@ public class ReviewListActivity
         return selectedItems;
     }
 
-    // this is our own callback for a AddListItemDialogFragment which adds a new job lead.
+    // this is our own callback for a AddListItemDialogFragment which adds a newlist item.
     public void addListItem(ListItem ListItem) {
-        // add the new job lead
-        // Add a new element (ListItem) to the list of job leads in Firebase.
+        // add the newlist item
+        // Add a new element (ListItem) to the list oflist items in Firebase.
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("itemlists");
 
         // First, a call to push() appends a new node to the existing list (one is created
         // if this is done for the first time).  Then, we set the value in the newly created
-        // list node to store the new job lead.
+        // list node to store the newlist item.
         // This listener will be invoked asynchronously, as no need for an AsyncTask, as in
-        // the previous apps to maintain job leads.
+        // the previous apps to maintainlist items.
         myRef.push().setValue( ListItem )
                 .addOnSuccessListener( new OnSuccessListener<Void>() {
                     @Override
@@ -206,9 +206,9 @@ public class ReviewListActivity
                             }
                         } );
 
-                        Log.d( DEBUG_TAG, "Job lead saved: " + ListItem );
+                        Log.d( DEBUG_TAG, "List item saved: " + ListItem );
                         // Show a quick confirmation
-                        Toast.makeText(getApplicationContext(), "Job lead created for " + ListItem.getItemName(),
+                        Toast.makeText(getApplicationContext(), "List item created for " + ListItem.getItemName(),
                                 Toast.LENGTH_SHORT).show();
 
                     }
@@ -216,7 +216,7 @@ public class ReviewListActivity
                 .addOnFailureListener( new OnFailureListener() {
                     @Override
                     public void onFailure( @NonNull Exception e ) {
-                        Toast.makeText( getApplicationContext(), "Failed to create a Job lead for " + ListItem.getItemName(),
+                        Toast.makeText( getApplicationContext(), "Failed to create a List item for " + ListItem.getItemName(),
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -227,28 +227,28 @@ public class ReviewListActivity
     // It is called from the EditListItemDialogFragment.
     public void updateListItem( int position, ListItem ListItem, int action ) {
         if( action == EditListItemDialogFragment.SAVE ) {
-            Log.d( DEBUG_TAG, "Updating job lead at: " + position + "(" + ListItem.getItemName() + ")" );
+            Log.d( DEBUG_TAG, "Updating list item at: " + position + "(" + ListItem.getItemName() + ")" );
 
-            // Update the recycler view to show the changes in the updated job lead in that view
+            // Update the recycler view to show the changes in the updatedlist item in that view
             recyclerAdapter.notifyItemChanged( position );
 
-            // Update this job lead in Firebase
+            // Update thislist item in Firebase
             // Note that we are using a specific key (one child in the list)
             DatabaseReference ref = database
                     .getReference()
-                    .child( "ShoppingLists" )
+                    .child( "itemlists" )
                     .child( ListItem.getKey() );
 
             // This listener will be invoked asynchronously, hence no need for an AsyncTask class, as in the previous apps
-            // to maintain job leads.
+            // to maintainlist items.
             ref.addListenerForSingleValueEvent( new ValueEventListener() {
                 @Override
                 public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
                     dataSnapshot.getRef().setValue( ListItem ).addOnSuccessListener( new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Log.d( DEBUG_TAG, "updated job lead at: " + position + "(" + ListItem.getItemName() + ")" );
-                            Toast.makeText(getApplicationContext(), "Job lead updated for " + ListItem.getItemName(),
+                            Log.d( DEBUG_TAG, "updatedlist item at: " + position + "(" + ListItem.getItemName() + ")" );
+                            Toast.makeText(getApplicationContext(), "List item updated for " + ListItem.getItemName(),
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -256,45 +256,45 @@ public class ReviewListActivity
 
                 @Override
                 public void onCancelled( @NonNull DatabaseError databaseError ) {
-                    Log.d( DEBUG_TAG, "failed to update job lead at: " + position + "(" + ListItem.getItemName() + ")" );
+                    Log.d( DEBUG_TAG, "failed to updatelist item at: " + position + "(" + ListItem.getItemName() + ")" );
                     Toast.makeText(getApplicationContext(), "Failed to update " + ListItem.getItemName(),
                             Toast.LENGTH_SHORT).show();
                 }
             });
         }
         else if( action == EditListItemDialogFragment.DELETE ) {
-            Log.d( DEBUG_TAG, "Deleting job lead at: " + position + "(" + ListItem.getItemName() + ")" );
+            Log.d( DEBUG_TAG, "Deletinglist item at: " + position + "(" + ListItem.getItemName() + ")" );
 
-            // remove the deleted job lead from the list (internal list in the App)
+            // remove the deletedlist item from the list (internal list in the App)
             itemsList.remove( position );
 
-            // Update the recycler view to remove the deleted job lead from that view
+            // Update the recycler view to remove the deletedlist item from that view
             recyclerAdapter.notifyItemRemoved( position );
 
-            // Delete this job lead in Firebase.
+            // Delete thislist item in Firebase.
             // Note that we are using a specific key (one child in the list)
             DatabaseReference ref = database
                     .getReference()
-                    .child( "ShoppingLists" )
+                    .child( "itemlists" )
                     .child( ListItem.getKey() );
 
             // This listener will be invoked asynchronously, hence no need for an AsyncTask class, as in the previous apps
-            // to maintain job leads.
+            // to maintainlist items.
             ref.addListenerForSingleValueEvent( new ValueEventListener() {
                 @Override
                 public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
                     dataSnapshot.getRef().removeValue().addOnSuccessListener( new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Log.d( DEBUG_TAG, "deleted job lead at: " + position + "(" + ListItem.getItemName() + ")" );
-                            Toast.makeText(getApplicationContext(), "Job lead deleted for " + ListItem.getItemName(),
+                            Log.d( DEBUG_TAG, "deleted list item at: " + position + "(" + ListItem.getItemName() + ")" );
+                            Toast.makeText(getApplicationContext(), "List item deleted for " + ListItem.getItemName(),
                                     Toast.LENGTH_SHORT).show();                        }
                     });
                 }
 
                 @Override
                 public void onCancelled( @NonNull DatabaseError databaseError ) {
-                    Log.d( DEBUG_TAG, "failed to delete job lead at: " + position + "(" + ListItem.getItemName() + ")" );
+                    Log.d( DEBUG_TAG, "failed to delete list item at: " + position + "(" + ListItem.getItemName() + ")" );
                     Toast.makeText(getApplicationContext(), "Failed to delete " + ListItem.getItemName(),
                             Toast.LENGTH_SHORT).show();
                 }

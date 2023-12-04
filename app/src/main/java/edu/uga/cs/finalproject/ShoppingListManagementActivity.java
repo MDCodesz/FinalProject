@@ -26,13 +26,15 @@ public class ShoppingListManagementActivity extends AppCompatActivity {
 
         Log.d( DEBUG_TAG, "ShoppingListManagementActivity.onCreate()" );
 
-        Button newLeadButton = findViewById(R.id.button1);
-        Button reviewLeadsButton = findViewById(R.id.button2);
+        Button newItemButton = findViewById(R.id.button1);
+        Button viewShoppingListButton = findViewById(R.id.button2);
         Button reviewCart = findViewById(R.id.button3);
+        Button viewPurchasedListsButton = findViewById(R.id.button4);
         signedInTextView = findViewById( R.id.textView3 );
 
-        newLeadButton.setOnClickListener( new NewLeadButtonClickListener() );
-        reviewLeadsButton.setOnClickListener( new ReviewLeadsButtonClickListener() );
+        newItemButton.setOnClickListener( new NewListItemButtonClickListener() );
+        viewShoppingListButton.setOnClickListener( new ViewShoppingListButtonClickListener() );
+        viewPurchasedListsButton.setOnClickListener( new ViewPurchasedListsButtonClickListener() );
         reviewCart.setOnClickListener(new ReviewCartButtonClickListener() );
 
         // Setup a listener for a change in the sign in status (authentication status change)
@@ -56,7 +58,7 @@ public class ShoppingListManagementActivity extends AppCompatActivity {
         });
     }
 
-    private class NewLeadButtonClickListener implements View.OnClickListener {
+    private class NewListItemButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), NewListItemActivity.class);
@@ -64,10 +66,18 @@ public class ShoppingListManagementActivity extends AppCompatActivity {
         }
     }
 
-    private class ReviewLeadsButtonClickListener implements View.OnClickListener {
+    private class ViewShoppingListButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), ReviewListActivity.class);
+            view.getContext().startActivity(intent);
+        }
+    }
+
+    private class ViewPurchasedListsButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(view.getContext(), PurchasedListActivity.class);
             view.getContext().startActivity(intent);
         }
     }

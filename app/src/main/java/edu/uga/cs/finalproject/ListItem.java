@@ -2,8 +2,7 @@ package edu.uga.cs.finalproject;
 
 
 /**
- * This class represents a single job lead, including the company name,
- * price number, URL, and some comments.
+ * This class represents a single list item, including the item name and price
  */
 public class ListItem {
     private String key;

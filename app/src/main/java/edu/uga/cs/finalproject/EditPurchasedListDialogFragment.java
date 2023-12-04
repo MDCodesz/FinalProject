@@ -8,44 +8,49 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 
-// This is a DialogFragment to handle edits to a ListItem.
+// This is a DialogFragment to handle edits to a PurchasedList.
 // The edits are: updates and deletions of existing JobLeads.
-public class EditListItemDialogFragment extends DialogFragment {
+public class EditPurchasedListDialogFragment extends DialogFragment {
 
     // indicate the type of an edit
     public static final int SAVE = 1;   // update an existing job lead
     public static final int DELETE = 2; // delete an existing job lead
 
-    private EditText itemNameView;
+    private TextView nameView;
+    private TextView dateView;
     private EditText priceView;
-    
-    int position;     // the position of the edited ListItem on the list of job leads
+
+    int position;     // the position of the edited PurchasedList on the list of job leads
     String key;
-    String item;
+    String name;
+    String date; 
     double price;
 
-    // A callback listener interface to finish up the editing of a ListItem.
+    // A callback listener interface to finish up the editing of a PurchasedList.
     // ReviewJobLeadsActivity implements this listener interface, as it will
     // need to update the list of JobLeads and also update the RecyclerAdapter to reflect the
     // changes.
-    public interface EditListItemDialogListener {
-        void updateListItem(int position, ListItem listItem, int action);
+    public interface EditPurchasedListDialogListener {
+        void updatePurchasedList(int position, PurchasedList purchasedList, int action);
     }
 
-    public static EditListItemDialogFragment newInstance(int position, String key, String item, double price) {
-        EditListItemDialogFragment dialog = new EditListItemDialogFragment();
+    public static EditPurchasedListDialogFragment newInstance(int position, String key, String name, String date, double price) {
+        EditPurchasedListDialogFragment dialog = new EditPurchasedListDialogFragment();
 
         // Supply job lead values as an argument.
         Bundle args = new Bundle();
         args.putString( "key", key );
         args.putInt( "position", position );
-        args.putString("item", item);
+        args.putString("name", name);
+        args.putString("date", date);
         args.putDouble("price", price);
         dialog.setArguments(args);
 
@@ -58,18 +63,22 @@ public class EditListItemDialogFragment extends DialogFragment {
 
         key = getArguments().getString( "key" );
         position = getArguments().getInt( "position" );
-        item = getArguments().getString( "item" );
+        name = getArguments().getString( "name" );
+        date = getArguments().getString( "date" );
         price = getArguments().getDouble( "price" );
 
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View layout = inflater.inflate( R.layout.add_list_item_dialog, getActivity().findViewById( R.id.root ) );
+        final View layout = inflater.inflate( R.layout.edit_purchased_list_dialog, getActivity().findViewById( R.id.root ) );
 
-        itemNameView = layout.findViewById( R.id.editTextText );
-        priceView = layout.findViewById( R.id.editTextText2 );
+        nameView = layout.findViewById( R.id.textView1 );
+        dateView = layout.findViewById( R.id.textView2 );
+        priceView = layout.findViewById( R.id.editText1 );
 
         // Pre-fill the edit texts with the current values for this job lead.
         // The user will be able to modify them.
-        itemNameView.setText( item );
+        nameView.setText( name );
+        dateView.setText( date );
+
 
         String priceVal = String.valueOf(price);
         priceView.setText( priceVal );
@@ -79,7 +88,7 @@ public class EditListItemDialogFragment extends DialogFragment {
         builder.setView(layout);
 
         // Set the title of the AlertDialog
-        builder.setTitle( "Edit Shopping List" );
+        builder.setTitle( "Edit Purchased List" );
 
         // The Cancel button handler
         builder.setNegativeButton( android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -103,7 +112,9 @@ public class EditListItemDialogFragment extends DialogFragment {
     private class SaveButtonClickListener implements DialogInterface.OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            String companyName = itemNameView.getText().toString();
+            String name = nameView.getText().toString();
+            String date = nameView.getText().toString();
+
             String priceText = priceView.getText().toString();
 
             // Converting the String to a double
@@ -116,15 +127,15 @@ public class EditListItemDialogFragment extends DialogFragment {
                     //display an error message to the user here
                 }
             }
-            
-            
-            ListItem listItem = new ListItem( companyName, price );
-            listItem.setKey( key );
+
+
+            PurchasedList purchasedList = new PurchasedList( name, date, price );
+            purchasedList.setKey( key );
 
             // get the Activity's listener to add the new job lead
-            EditListItemDialogListener listener = (EditListItemDialogFragment.EditListItemDialogListener) getActivity();
+            EditPurchasedListDialogListener listener = (EditPurchasedListDialogFragment.EditPurchasedListDialogListener) getActivity();
             // add the new job lead
-            listener.updateListItem( position, listItem, SAVE );
+            listener.updatePurchasedList( position, purchasedList, SAVE );
 
             // close the dialog
             dismiss();
@@ -135,12 +146,12 @@ public class EditListItemDialogFragment extends DialogFragment {
         @Override
         public void onClick( DialogInterface dialog, int which ) {
 
-            ListItem listItem = new ListItem( item, price);
-            listItem.setKey( key );
+            PurchasedList purchasedList = new PurchasedList( name, date, price);
+            purchasedList.setKey( key );
 
             // get the Activity's listener to add the new job lead
-            EditListItemDialogFragment.EditListItemDialogListener listener = (EditListItemDialogFragment.EditListItemDialogListener) getActivity();            // add the new job lead
-            listener.updateListItem( position, listItem, DELETE );
+            EditPurchasedListDialogFragment.EditPurchasedListDialogListener listener = (EditPurchasedListDialogFragment.EditPurchasedListDialogListener) getActivity();            // add the new job lead
+            listener.updatePurchasedList( position, purchasedList, DELETE );
             // close the dialog
             dismiss();
         }
