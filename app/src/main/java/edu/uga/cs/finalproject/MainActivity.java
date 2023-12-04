@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        AppCompatDelegate.setDefaultNightMode( AppCompatDelegate.MODE_NIGHT_YES );
+        AppCompatDelegate.setDefaultNightMode( AppCompatDelegate.MODE_NIGHT_NO );
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         // assigning ID of the toolbar to a variable
         toolbar = findViewById( R.id.toolbar );
         // using toolbar as ActionBar
-        setSupportActionBar( toolbar );
+        //setSupportActionBar( toolbar );
         // Find our drawer view
         drawerLayout = (DrawerLayout) findViewById( R.id.drawer_layout );
         drawerToggle = setupDrawerToggle();

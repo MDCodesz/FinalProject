@@ -1,11 +1,13 @@
 package edu.uga.cs.finalproject;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,6 +27,8 @@ public class ShoppingListManagementActivity extends AppCompatActivity {
         setContentView(R.layout.activity_shopping_list_management);
 
         Log.d( DEBUG_TAG, "ShoppingListManagementActivity.onCreate()" );
+
+
 
         Button newItemButton = findViewById(R.id.button1);
         Button viewShoppingListButton = findViewById(R.id.button2);
@@ -57,6 +61,8 @@ public class ShoppingListManagementActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     private class NewListItemButtonClickListener implements View.OnClickListener {
         @Override

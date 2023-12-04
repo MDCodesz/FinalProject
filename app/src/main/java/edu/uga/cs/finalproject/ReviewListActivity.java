@@ -43,6 +43,7 @@ public class ReviewListActivity
     private List<Integer> selectedPositions = new ArrayList<>();
 
     private FirebaseDatabase database;
+    private double price;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
@@ -132,6 +133,8 @@ public class ReviewListActivity
 
         if (!selectedItems.isEmpty()) {
             List<String> itemIds = getItemIds(selectedItems);
+            Log.d("ShoppingListActivity", "ItemIds: " + itemIds);
+
             addToBasket(itemIds, selectedItems);
         }
     }
@@ -155,13 +158,18 @@ public class ReviewListActivity
             String itemId = itemIds.get(i);
             ListItem item = items.get(i);
 
+
             // Remove from shopping list
             myRef.child("itemlists").child(itemId).removeValue();
+            Log.d("ShoppingListActivity", "ItemIds Removed: " + itemIds);
 
             // Add to shopping basket
-            myRef.child("ShoppingBasket").setValue(item);
+            myRef.child(itemId).setValue(item);
         }
     }
+
+
+
     private List<ListItem> getSelectedItems() {
         List<ListItem> selectedItems = new ArrayList<>();
 

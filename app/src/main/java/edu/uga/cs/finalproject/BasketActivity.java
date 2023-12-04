@@ -2,15 +2,18 @@ package edu.uga.cs.finalproject;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +34,7 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
     private List<ListItem> itemsList;
 
     private FirebaseDatabase database;
+    private double price;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,15 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
         setContentView(R.layout.activity_basket);
 
         recyclerView = findViewById(R.id.recyclerView2);
+
+        FloatingActionButton floatingButton = findViewById(R.id.floatingActionButton2);
+        floatingButton.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new AddListItemDialogFragment();
+                newFragment.show( getSupportFragmentManager(), null);
+            }
+        });
 
         // initialize the Job Lead list
         itemsList = new ArrayList<ListItem>();
