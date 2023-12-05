@@ -7,6 +7,7 @@ package edu.uga.cs.finalproject;
 public class ListItem {
     private String key;
     private String itemName;
+    private String user;
     private double price;
 
     public ListItem()
@@ -45,7 +46,8 @@ public class ListItem {
     public void setPrice(double price) {
         this.price = price;
     }
-
+    public void setUser(String userIn) {this.user = userIn;}
+    public String getUser() {return this.user;}
     public String toString() {
         return itemName + " " + price;
     }

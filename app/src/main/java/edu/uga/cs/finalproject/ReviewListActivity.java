@@ -153,7 +153,7 @@ public class ReviewListActivity
         // Assuming userUid and itemId are known
         //DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userUid);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("ShoppingBasket");
+        DatabaseReference myRef = database.getReference("Users");
         for(int i = 0; i < itemIds.size(); i++ ) {
             String itemId = itemIds.get(i);
             ListItem item = items.get(i);
@@ -164,7 +164,7 @@ public class ReviewListActivity
             Log.d("ShoppingListActivity", "ItemIds Removed: " + itemIds);
 
             // Add to shopping basket
-            myRef.child(itemId).setValue(item);
+            myRef.child("ShoppingBasket").child(itemId).setValue(item);
         }
     }
 

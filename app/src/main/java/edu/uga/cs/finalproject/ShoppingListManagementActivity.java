@@ -34,13 +34,14 @@ public class ShoppingListManagementActivity extends AppCompatActivity {
         Button viewShoppingListButton = findViewById(R.id.button2);
         Button reviewCart = findViewById(R.id.button3);
         Button viewPurchasedListsButton = findViewById(R.id.button4);
+        Button logoutButton = findViewById(R.id.button6);
         signedInTextView = findViewById( R.id.textView3 );
 
         newItemButton.setOnClickListener( new NewListItemButtonClickListener() );
         viewShoppingListButton.setOnClickListener( new ViewShoppingListButtonClickListener() );
         viewPurchasedListsButton.setOnClickListener( new ViewPurchasedListsButtonClickListener() );
         reviewCart.setOnClickListener(new ReviewCartButtonClickListener() );
-
+        logoutButton.setOnClickListener(new LogoutButtonClickListener());
         // Setup a listener for a change in the sign in status (authentication status change)
         // when it is invoked, check if a user is signed in and update the UI text view string,
         // as needed.
@@ -92,6 +93,15 @@ public class ShoppingListManagementActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), BasketActivity.class);
+            view.getContext().startActivity(intent);
+        }
+    }
+
+    private class LogoutButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(view.getContext(), MainActivity.class);
+            FirebaseAuth.getInstance().signOut();
             view.getContext().startActivity(intent);
         }
     }
