@@ -35,14 +35,14 @@ public class ListItemRecyclerAdapter extends RecyclerView.Adapter<ListItemRecycl
     class ListItemHolder extends RecyclerView.ViewHolder {
 
         TextView itemName;
-        TextView price;
+        //TextView price;
         Button basketButton;
 
         public ListItemHolder(View itemView ) {
             super(itemView);
 
             itemName = itemView.findViewById( R.id.itemName );
-            price = itemView.findViewById( R.id.price );
+            //price = itemView.findViewById( R.id.price );
             basketButton = itemView.findViewById(R.id.basketButton);
         }
     }
@@ -78,7 +78,7 @@ public class ListItemRecyclerAdapter extends RecyclerView.Adapter<ListItemRecycl
 
         holder.itemName.setText( listItem.getItemName());
         //holder.price.setText( listItem.getPrice() );
-        holder.price.setText(String.valueOf(listItem.getPrice()));
+        //holder.price.setText(String.valueOf(listItem.getPrice()));
         //for add to basket button
         holder.basketButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,7 +102,7 @@ public class ListItemRecyclerAdapter extends RecyclerView.Adapter<ListItemRecycl
                 //Log.d( TAG, "onBindViewHolder: getItemId: " + holder.getItemId() );
                 //Log.d( TAG, "onBindViewHolder: getAdapterPosition: " + holder.getAdapterPosition() );
                 EditListItemDialogFragment editItemFragment =
-                        EditListItemDialogFragment.newInstance( holder.getAdapterPosition(), key, item, price);
+                        EditListItemDialogFragment.newInstance( holder.getAdapterPosition(), key, item);
                 editItemFragment.show( ((AppCompatActivity)context).getSupportFragmentManager(), null);
             }
         });
