@@ -1,10 +1,12 @@
 package edu.uga.cs.finalproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,9 +25,11 @@ public class PurchasedListRecyclerAdapter extends RecyclerView.Adapter<Purchased
     private List<PurchasedList> purchasedList;
     private Context context;
 
+
     public PurchasedListRecyclerAdapter( List<PurchasedList> purchasedList, Context context ) {
         this.purchasedList = purchasedList;
         this.context = context;
+
     }
 
     // The adapter must have a ViewHolder class to "hold" one item to show.
@@ -35,6 +39,8 @@ public class PurchasedListRecyclerAdapter extends RecyclerView.Adapter<Purchased
         TextView name;
         TextView date;
         TextView price;
+        Button button;
+
 
         public PurchasedListHolder(View itemView ) {
             super(itemView);
@@ -42,8 +48,11 @@ public class PurchasedListRecyclerAdapter extends RecyclerView.Adapter<Purchased
             name = itemView.findViewById( R.id.name );
             date = itemView.findViewById( R.id.date );
             price = itemView.findViewById( R.id.totalPrice );
+            button = itemView.findViewById( R.id.itemButton );
+
         }
     }
+
 
     @NonNull
     @Override
@@ -55,21 +64,38 @@ public class PurchasedListRecyclerAdapter extends RecyclerView.Adapter<Purchased
     // This method fills in the values of the Views to show a PurchasedList
     @Override
     public void onBindViewHolder( PurchasedListHolder holder, int position ) {
-        PurchasedList purchaseListItem = purchasedList.get( position );
+        PurchasedList purchasedListItem = purchasedList.get( position );
 
-        Log.d( DEBUG_TAG, "onBindViewHolder: " + purchaseListItem );
+        Log.d( DEBUG_TAG, "onBindViewHolder: " + purchasedListItem );
 
-        String key = purchaseListItem.getKey();
-        String name = purchaseListItem.getName();
-        String date = purchaseListItem.getDate();
+        String key = purchasedListItem.getKey();
+        String name = purchasedListItem.getName();
+        String date = purchasedListItem.getDate();
+        String dateLabel = "Date" + purchasedListItem.getDate();
 
-        double price = purchaseListItem.getPrice();
-        //String price = String.valueOf(purchaseListItem.getPrice());
 
-        holder.name.setText( purchaseListItem.getName());
-        holder.date.setText( purchaseListItem.getDate());
-        //holder.price.setText( purchaseListItem.getPrice() );
-        holder.price.setText(String.valueOf(purchaseListItem.getPrice()));
+        double price = purchasedListItem.getPrice();
+        String priceLabel = "Price: $" + String.valueOf(purchasedListItem.getPrice());
+        //String price = String.valueOf(purchasedListItem.getPrice());
+
+        holder.name.setText( name);
+        holder.date.setText( dateLabel);
+        //holder.price.setText( purchasedListItem.getPrice() );
+        holder.price.setText(priceLabel);
+
+        holder.button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an intent to start PurchasedItemActivity
+                Intent intent = new Intent(context, PurchasedItemActivity.class);
+
+                // Pass the key of the PurchasedList to PurchasedItemActivity
+                intent.putExtra("purchasedListKey", purchasedListItem.getKey());
+
+                // Start the activity
+                context.startActivity(intent);
+            }
+        });
 
         // We can attach an OnClickListener to the itemView of the holder;
         // itemView is a public field in the Holder class.

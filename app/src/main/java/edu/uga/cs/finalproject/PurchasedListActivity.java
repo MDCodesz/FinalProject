@@ -53,15 +53,6 @@ public class PurchasedListActivity extends AppCompatActivity
 
         recyclerView = findViewById( R.id.recyclerView );
 
-//        FloatingActionButton floatingButton = findViewById(R.id.floatingActionButton);
-//        floatingButton.setOnClickListener( new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                DialogFragment newFragment = new AddListItemDialogFragment();
-//                newFragment.show( getSupportFragmentManager(), null);
-//            }
-//        });
-
         // initialize the Job Lead list
         purchasedList = new ArrayList<PurchasedList>();
 
@@ -75,7 +66,7 @@ public class PurchasedListActivity extends AppCompatActivity
 
         // get a Firebase DB instance reference
         database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("purchasedlist");
+        DatabaseReference myRef = database.getReference("purchasedlists");
 
         // Set up a listener (event handler) to receive a value for the database reference.
         // This type of listener is called by Firebase once by immediately executing its onDataChange method
@@ -108,34 +99,30 @@ public class PurchasedListActivity extends AppCompatActivity
         } );
     }
 
-    // this is our own callback for a AddListItemDialogFragment which adds a new purchase list.
-//    public void addListItem(PurchasedList PurchasedList) {
-//        FirebaseDatabase database = FirebaseDatabase.getInstance();
-//        DatabaseReference myRef = database.getReference("purchasedlist");
-//        myRef.push().setValue( PurchasedList )
-//                .addOnSuccessListener( new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        recyclerView.post( new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                recyclerView.smoothScrollToPosition( purchasedList.size()-1 );
-//                            }
-//                        } );
-//                        Log.d( DEBUG_TAG, "Purchase list saved: " + PurchasedList );
-//                        // Show a quick confirmation
-//                        Toast.makeText(getApplicationContext(), "Purchase list created for " + PurchasedList.getName(),
-//                                Toast.LENGTH_SHORT).show();
-//                    }
-//                })
-//                .addOnFailureListener( new OnFailureListener() {
-//                    @Override
-//                    public void onFailure( @NonNull Exception e ) {
-//                        Toast.makeText( getApplicationContext(), "Failed to create a Purchase list for " + PurchasedList.getName(),
-//                                Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//    }
+
+    public void updatePurchasedListPrice(String purchasedListKey, double newPrice) {
+        DatabaseReference purchasedListRef = database.getReference()
+                .child("purchasedlists")
+                .child(purchasedListKey)
+                .child("price"); // Reference to the price field under the purchased list
+
+        purchasedListRef.setValue(newPrice)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(DEBUG_TAG, "Purchased list price updated successfully");
+                        // Notify user or perform further actions upon successful update
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(DEBUG_TAG, "Failed to update purchased list price: " + e.getMessage());
+                        // Handle the failure scenario, if needed
+                    }
+                });
+    }
+
 
     // This is our own callback for a DialogFragment which edits an existing PurchasedList.
     // The edit may be an update or a deletion of this PurchasedList.
@@ -151,7 +138,7 @@ public class PurchasedListActivity extends AppCompatActivity
             // Note that we are using a specific key (one child in the list)
             DatabaseReference ref = database
                     .getReference()
-                    .child( "purchasedlist" )
+                    .child( "purchasedlists" )
                     .child( PurchasedList.getKey() );
 
             // This listener will be invoked asynchronously, hence no need for an AsyncTask class, as in the previous apps
@@ -173,44 +160,6 @@ public class PurchasedListActivity extends AppCompatActivity
                 public void onCancelled( @NonNull DatabaseError databaseError ) {
                     Log.d( DEBUG_TAG, "failed to update purchase list at: " + position + "(" + PurchasedList.getName() + ")" );
                     Toast.makeText(getApplicationContext(), "Failed to update " + PurchasedList.getName(),
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-        else if( action == EditPurchasedListDialogFragment.DELETE ) {
-            Log.d( DEBUG_TAG, "Deleting purchase list at: " + position + "(" + PurchasedList.getName() + ")" );
-
-            // remove the deleted purchase list from the list (internal list in the App)
-            purchasedList.remove( position );
-
-            // Update the recycler view to remove the deleted purchase list from that view
-            recyclerAdapter.notifyItemRemoved( position );
-
-            // Delete this purchase list in Firebase.
-            // Note that we are using a specific key (one child in the list)
-            DatabaseReference ref = database
-                    .getReference()
-                    .child( "purchasedlist" )
-                    .child( PurchasedList.getKey() );
-
-            // This listener will be invoked asynchronously, hence no need for an AsyncTask class, as in the previous apps
-            // to maintain purchase lists.
-            ref.addListenerForSingleValueEvent( new ValueEventListener() {
-                @Override
-                public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
-                    dataSnapshot.getRef().removeValue().addOnSuccessListener( new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d( DEBUG_TAG, "deleted purchase list at: " + position + "(" + PurchasedList.getName() + ")" );
-                            Toast.makeText(getApplicationContext(), "Purchase list deleted for " + PurchasedList.getName(),
-                                    Toast.LENGTH_SHORT).show();                        }
-                    });
-                }
-
-                @Override
-                public void onCancelled( @NonNull DatabaseError databaseError ) {
-                    Log.d( DEBUG_TAG, "failed to delete purchase list at: " + position + "(" + PurchasedList.getName() + ")" );
-                    Toast.makeText(getApplicationContext(), "Failed to delete " + PurchasedList.getName(),
                             Toast.LENGTH_SHORT).show();
                 }
             });
