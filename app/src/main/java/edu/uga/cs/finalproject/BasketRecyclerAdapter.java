@@ -58,7 +58,8 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
         String key = listItem.getKey();
         String item = listItem.getItemName();
 
-        double price = listItem.getPrice();
+        //double price = listItem.getPrice();
+        double price = 0.0;
         //String price = String.valueOf(listItem.getPrice());
 
         holder.itemName.setText( listItem.getItemName());
@@ -76,8 +77,8 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
             public void onClick(View v) {
                 //Log.d( TAG, "onBindViewHolder: getItemId: " + holder.getItemId() );
                 //Log.d( TAG, "onBindViewHolder: getAdapterPosition: " + holder.getAdapterPosition() );
-                EditListItemDialogFragment editItemFragment =
-                        EditListItemDialogFragment.newInstance( holder.getAdapterPosition(), key, item, price);
+                EditBasketListDialogFragment editItemFragment =
+                        EditBasketListDialogFragment.newInstance( holder.getAdapterPosition(), key, item, price);
                 editItemFragment.show( ((AppCompatActivity)context).getSupportFragmentManager(), null);
             }
         });

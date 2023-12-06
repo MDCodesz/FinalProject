@@ -23,6 +23,14 @@ public class ListItem {
         this.price = price;
     }
 
+
+    public ListItem( String itemName) {
+        this.key = null;
+        this.itemName = itemName;
+        this.price = 0.0;
+    }
+
+
     public String getKey() {
         return key;
     }

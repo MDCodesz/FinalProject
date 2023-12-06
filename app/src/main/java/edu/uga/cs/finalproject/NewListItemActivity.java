@@ -74,29 +74,29 @@ public class NewListItemActivity extends AppCompatActivity {
             // This listener will be invoked asynchronously, as no need for an AsyncTask, as in
             // the previous apps to maintain shopping lists.
             myRef.push().setValue( listItem )
-                    .addOnSuccessListener( new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d( DEBUG_TAG, "Successfully pushed" );
-                            // Show a quick confirmation
-                            Toast.makeText(getApplicationContext(), "List Item created for " + listItem.getItemName(),
-                                    Toast.LENGTH_SHORT).show();
+                .addOnSuccessListener( new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d( DEBUG_TAG, "Successfully pushed" );
+                        // Show a quick confirmation
+                        Toast.makeText(getApplicationContext(), "List Item created for " + listItem.getItemName(),
+                                Toast.LENGTH_SHORT).show();
 
-                            // Clear the EditTexts for next use.
-                            itemNameView.setText("");
-                            priceView.setText(""); // remove?
-                        }
-                    })
-                    .addOnFailureListener( new OnFailureListener() {
+                        // Clear the EditTexts for next use.
+                        itemNameView.setText("");
+                        priceView.setText(""); // remove?
+                    }
+                })
+                .addOnFailureListener( new OnFailureListener() {
 
-                        @Override
-                        public void onFailure( @NonNull Exception e ) {
-                            Log.d( DEBUG_TAG, "failed pushed" );
-                            Toast.makeText( getApplicationContext(), "Failed to create a List Item for " + listItem.getItemName(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        }
+                    @Override
+                    public void onFailure( @NonNull Exception e ) {
+                        Log.d( DEBUG_TAG, "failed pushed" );
+                        Toast.makeText( getApplicationContext(), "Failed to create a List Item for " + listItem.getItemName(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
     }
 
     @Override

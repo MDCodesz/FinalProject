@@ -122,46 +122,9 @@ public class PurchasedItemActivity extends AppCompatActivity
     // The edit may be an update or a deletion of this PurchasedItem.
     // It is called from the EditPurchasedItemDialogFragment.
     public void updatePurchasedItem( int position, PurchasedItem PurchasedItem, int action ) {
-        if( action == EditPurchasedItemDialogFragment.SAVE ) {
-            Log.d( DEBUG_TAG, "Updating purchased item at: " + position + "(" + PurchasedItem.getItemName() + ")" );
-
-            // Update the recycler view to show the changes in the updatedlist item in that view
-            recyclerAdapter.notifyItemChanged( position );
-
-            // Update thislist item in Firebase
-            // Note that we are using a specific key (one child in the list)
-//            DatabaseReference ref = database
-//                    .getReference()
-//                    .child( "purchaseditems" )
-//                    .child( PurchasedItem.getKey() );
-
-            DatabaseReference ref = database.getReference().child("purchasedlists").child(purchasedListKey).child("purchaseditems").child( PurchasedItem.getKey() );
-
-            // This listener will be invoked asynchronously, hence no need for an AsyncTask class, as in the previous apps
-            // to maintainlist items.
-            ref.addListenerForSingleValueEvent( new ValueEventListener() {
-                @Override
-                public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
-                    dataSnapshot.getRef().setValue( PurchasedItem ).addOnSuccessListener( new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d( DEBUG_TAG, "updated purchased item at: " + position + "(" + PurchasedItem.getItemName() + ")" );
-                            Toast.makeText(getApplicationContext(), "Purchased item updated for " + PurchasedItem.getItemName(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-
-                @Override
-                public void onCancelled( @NonNull DatabaseError databaseError ) {
-                    Log.d( DEBUG_TAG, "failed to update purchased item at: " + position + "(" + PurchasedItem.getItemName() + ")" );
-                    Toast.makeText(getApplicationContext(), "Failed to update " + PurchasedItem.getItemName(),
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-        else if( action == EditPurchasedItemDialogFragment.DELETE ) {
+        if( action == EditPurchasedItemDialogFragment.DELETE ) {
             Log.d( DEBUG_TAG, "Deleting purchased item at: " + position + "(" + PurchasedItem.getItemName() + ")" );
+
 
             // remove the deletedlist item from the list (internal list in the App)
             purchasedItemsList.remove( position );
