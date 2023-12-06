@@ -56,7 +56,10 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
             }
         });
         //to get user
-        String userId =" ";
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = auth.getCurrentUser();
+        String userId = currentUser.getUid();
+        //String userId =" ";
         userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
         Log.d(DEBUG_TAG, "Basket onCreate user: " + userRef);
         // initialize the Job Lead list
@@ -72,7 +75,7 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
 
         // get a Firebase DB instance reference
         database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Users").child("ShoppingBasket");
+        DatabaseReference myRef = database.getReference("Users").child(userId).child("ShoppingBasket");
         // Set up a listener (event handler) to receive a value for the database reference.
         // This type of listener is called by Firebase once by immediately executing its onDataChange method
         // and then each time the value at Firebase changes.
@@ -108,8 +111,11 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
     public void addListItem(ListItem ListItem) {
         // add the new job lead
         // Add a new element (ListItem) to the list of job leads in Firebase.
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = auth.getCurrentUser();
+        String userId = currentUser.getUid();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Users").child("ShoppingBasket");
+        DatabaseReference myRef = database.getReference("Users").child(userId).child("ShoppingBasket");
 
         // First, a call to push() appends a new node to the existing list (one is created
         // if this is done for the first time).  Then, we set the value in the newly created
@@ -163,9 +169,13 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
 
             // Update this job lead in Firebase
             // Note that we are using a specific key (one child in the list)
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = auth.getCurrentUser();
+            String userId = currentUser.getUid();
             DatabaseReference ref = database
                     .getReference()
                     .child("Users")
+                    .child(userId)
                     .child("ShoppingBasket")
                     .child(ListItem.getKey());
 
@@ -202,9 +212,13 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
 
             // Delete this job lead in Firebase.
             // Note that we are using a specific key (one child in the list)
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = auth.getCurrentUser();
+            String userId = currentUser.getUid();
             DatabaseReference ref = database
                     .getReference()
                     .child("Users")
+                    .child(userId)
                     .child("ShoppingBasket")
                     .child(ListItem.getKey());
 

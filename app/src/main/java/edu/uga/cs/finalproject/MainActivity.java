@@ -186,6 +186,29 @@ public class MainActivity extends AppCompatActivity {
             if( response != null ) {
                 Log.d( DEBUG_TAG, "MainActivity.onSignInResult: response.getEmail(): " + response.getEmail() );
             }
+            FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                    FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+                    if (currentUser != null) {
+                        // User is logged in
+                        String userId = currentUser.getUid();
+                        String email = currentUser.getEmail();
+
+                        // Store user ID and email in the Realtime Database
+                        storeUserDataInDatabase(userId, email);
+
+                        // Update UI and data based on login
+                        //showShoppingBasket();
+                        // Add other logic to update UI and data based on login
+                    } else {
+                        // User is not logged in
+                        //hideShoppingBasket();
+                        // Add other logic to reset UI and data based on logout
+                    }
+                }
+            });
 
             //Log.d( DEBUG_TAG, "MainActivity.onSignInResult: Signed in as: " + user.getEmail() );
 
@@ -200,6 +223,14 @@ public class MainActivity extends AppCompatActivity {
                     "Sign in failed",
                     Toast.LENGTH_SHORT).show();
         }
+    }
+    // Method to store user ID and email in the Realtime Database
+    private void storeUserDataInDatabase(String userId, String email) {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
+
+        // Store user ID and email under the user's node in the database
+        usersRef.child("userId").setValue(userId);
+        usersRef.child("email").setValue(email);
     }
 
     private class RegisterButtonClickListener implements View.OnClickListener {

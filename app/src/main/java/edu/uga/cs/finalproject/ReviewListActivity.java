@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -153,7 +155,10 @@ public class ReviewListActivity
         // Assuming userUid and itemId are known
         //DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userUid);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Users");
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = auth.getCurrentUser();
+        String userId = currentUser.getUid();
+        DatabaseReference myRef = database.getReference("Users").child(userId);
         for(int i = 0; i < itemIds.size(); i++ ) {
             String itemId = itemIds.get(i);
             ListItem item = items.get(i);
