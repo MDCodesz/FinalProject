@@ -12,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +25,7 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
 
     private List<ListItem> itemList;
     private Context context;
+    private List<Integer> selectedPositions = new ArrayList<>();
 
     public BasketRecyclerAdapter( List<ListItem> itemList, Context context ) {
         this.itemList = itemList;
@@ -87,6 +91,38 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
     @Override
     public int getItemCount() {
         return itemList.size();
+    }
+
+    public void setItems(List<ListItem> itemList) {
+        this.itemList = itemList;
+        notifyDataSetChanged(); // Notify the adapter that the dataset has changed
+    }
+
+    //To move items to purchased list
+    public void moveItemsToPurchasedList(List<ListItem> items, DatabaseReference basketRef, DatabaseReference purchasedRef) {
+        for (ListItem item : items) {
+            Log.d(DEBUG_TAG, "Basket Adapter move items when checkout: " + item);
+            // Add the item to the purchased items list
+            purchasedRef.child(item.getKey()).setValue(item);
+
+            // Remove the item from the basket
+            basketRef.child(item.getKey()).removeValue();
+        }
+        notifyDataSetChanged(); // Refresh the RecyclerView
+    }
+
+    public List<ListItem> getSelectedItems() {
+        List<ListItem> selectedItems = new ArrayList<>();
+
+        for (int position : selectedPositions) {
+            if (position >= 0 && position < itemList.size()) {
+                Log.d(DEBUG_TAG, "Basket Adapter selected items when checkout: " + itemList);
+                ListItem item = itemList.get(position);
+                selectedItems.add(item);
+            }
+        }
+
+        return selectedItems;
     }
 
 }

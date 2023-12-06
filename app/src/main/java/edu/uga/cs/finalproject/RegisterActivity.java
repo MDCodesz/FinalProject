@@ -17,6 +17,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -66,6 +68,29 @@ public class RegisterActivity extends AppCompatActivity {
                                 Log.d( DEBUG_TAG, "createUserWithEmail: success" );
 
                                 FirebaseUser user = firebaseAuth.getCurrentUser();
+                                FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+                                    @Override
+                                    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                                        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+                                        if (currentUser != null) {
+                                            // User is logged in
+                                            String userId = currentUser.getUid();
+                                            String email = currentUser.getEmail();
+
+                                            // Store user ID and email in the Realtime Database
+                                            storeUserDataInDatabase(userId, email);
+
+                                            // Update UI and data based on login
+                                            //showShoppingBasket();
+                                            // Add other logic to update UI and data based on login
+                                        } else {
+                                            // User is not logged in
+                                            //hideShoppingBasket();
+                                            // Add other logic to reset UI and data based on logout
+                                        }
+                                    }
+                                });
 
                                 Intent intent = new Intent( RegisterActivity.this, ShoppingListManagementActivity.class );
                                 startActivity( intent );
@@ -79,5 +104,14 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     });
         }
+    }
+
+    // Method to store user ID and email in the Realtime Database
+    private void storeUserDataInDatabase(String userId, String email) {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
+
+        // Store user ID and email under the user's node in the database
+        usersRef.child("userId").setValue(userId);
+        usersRef.child("email").setValue(email);
     }
 }

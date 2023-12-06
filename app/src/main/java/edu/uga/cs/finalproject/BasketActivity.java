@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BasketActivity extends AppCompatActivity implements AddListItemDialogFragment.AddListItemDialogListener,
-        EditListItemDialogFragment.EditListItemDialogListener {
+        EditBasketListDialogFragment.EditBasketListDialogListener {
 
     public static final String DEBUG_TAG = "BasketActivity";
 
@@ -47,6 +48,7 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
 
         recyclerView = findViewById(R.id.recyclerView2);
         Button checkoutButton = findViewById(R.id.button5);
+
         FloatingActionButton floatingButton = findViewById(R.id.floatingActionButton2);
         floatingButton.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -72,6 +74,28 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
         // the recycler adapter with job leads is empty at first; it will be updated later
         recyclerAdapter = new BasketRecyclerAdapter(itemsList, BasketActivity.this);
         recyclerView.setAdapter(recyclerAdapter);
+
+        // Assuming you have a method to retrieve the list of items in the basket
+        List<ListItem> itemsInBasket = getItemsInBasket();
+        recyclerAdapter.setItems(itemsInBasket);
+
+//        checkoutButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.d(DEBUG_TAG, "Basket checkout button: ");
+//                List<ListItem> selectedItems = recyclerAdapter.getSelectedItems(); // Implement this method in your adapter
+//                moveItemsToPurchasedList(selectedItems);
+//            }
+//        });
+
+        checkoutButton.setOnClickListener(new checkoutListener());
+
+        // Calculate and display the total price initially
+        double totalPrice = calculateTotalPrice(itemsInBasket);
+        updateTotalPrice(totalPrice);
+
+        double totalWithTax = calculateTotalTaxPrice(itemsInBasket);
+        updateTotalTaxPrice(totalWithTax);
 
         // get a Firebase DB instance reference
         database = FirebaseDatabase.getInstance();
@@ -107,6 +131,76 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
         });
     }
 
+    private double calculateTotalPrice(List<ListItem> items) {
+        double totalPrice = 0.0;
+        for (ListItem item : items) {
+            totalPrice += item.getPrice();
+        }
+        return totalPrice;
+    }
+    private double calculateTotalTaxPrice(List<ListItem> items) {
+        double totalPrice = 0.0;
+
+        for (ListItem item : items) {
+            totalPrice += item.getPrice();
+        }
+        double taxPercentage = 0.04 * totalPrice;
+        totalPrice += taxPercentage;
+        return totalPrice;
+    }
+
+    private void updateTotalPrice(double totalPrice) {
+        // Update the UI to display the total price
+        // For example, if you have a TextView to display the total price:
+        TextView totalPriceTextView = findViewById(R.id.textView5);
+        totalPriceTextView.setText(String.format("Total Price: $%.2f", totalPrice));
+    }
+    private void updateTotalTaxPrice(double totalPrice) {
+        //total price with taxes
+        TextView totalTaxPriceTextView = findViewById(R.id.textView6);
+        totalTaxPriceTextView.setText(String.format("Total Price: $%.2f", totalPrice));
+    }
+
+    private List<ListItem> getItemsInBasket() {
+        // DatabaseReference to the 'ShoppingBasket' node
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = auth.getCurrentUser();
+        String userId = currentUser.getUid();
+        DatabaseReference basketRef = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("ShoppingBasket");
+
+        final List<ListItem> itemsInBasket = new ArrayList<>();
+
+        // Add a listener to fetch the items in the basket
+        basketRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                itemsInBasket.clear();
+
+                // Iterate through the 'ShoppingBasket' node and add items to the list
+                for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
+                    ListItem item = itemSnapshot.getValue(ListItem.class);
+                    if (item != null) {
+                        itemsInBasket.add(item);
+                    }
+                }
+
+                // After fetching the items, recalculate and update the total price
+                double totalPrice = calculateTotalPrice(itemsInBasket);
+                updateTotalPrice(totalPrice);
+                double totalWithTax = calculateTotalTaxPrice(itemsInBasket);
+                updateTotalTaxPrice(totalWithTax);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("BasketActivity", "Error fetching basket items: " + databaseError.getMessage());
+            }
+        });
+
+        return itemsInBasket;
+    }
+
+
     // this is our own callback for a AddListItemDialogFragment which adds a new job lead.
     public void addListItem(ListItem ListItem) {
         // add the new job lead
@@ -141,9 +235,9 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
                             }
                         });
 
-                        Log.d(DEBUG_TAG, "Job lead saved: " + ListItem);
+                        Log.d(DEBUG_TAG, "Item saved: " + ListItem);
                         // Show a quick confirmation
-                        Toast.makeText(getApplicationContext(), "Job lead created for " + ListItem.getItemName(),
+                        Toast.makeText(getApplicationContext(), "Item created for " + ListItem.getItemName(),
                                 Toast.LENGTH_SHORT).show();
 
                     }
@@ -151,7 +245,7 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "Failed to create a Job lead for " + ListItem.getItemName(),
+                        Toast.makeText(getApplicationContext(), "Failed to create an Item for " + ListItem.getItemName(),
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -188,7 +282,7 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d(DEBUG_TAG, "updated job lead at: " + position + "(" + ListItem.getItemName() + ")");
-                            Toast.makeText(getApplicationContext(), "Job lead updated for " + ListItem.getItemName(),
+                            Toast.makeText(getApplicationContext(), "Item updated for " + ListItem.getItemName(),
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -201,7 +295,7 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
                             Toast.LENGTH_SHORT).show();
                 }
             });
-        } else if (action == EditListItemDialogFragment.DELETE) {
+        } else if (action == EditBasketListDialogFragment.DELETE) {
             Log.d(DEBUG_TAG, "Deleting item at: " + position + "(" + ListItem.getItemName() + ")");
 
             // remove the deleted job lead from the list (internal list in the App)
@@ -346,16 +440,17 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
 //        // Update the database to indicate that the basket is not visible
 //        myRef.child("basketVisible").setValue(false);
 //    }
+    //checkoutListener to checkout items by sending them to the purchased
     private class checkoutListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-
+            Log.d(DEBUG_TAG, "Checkout button pressed");
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             FirebaseUser currentUser = mAuth.getCurrentUser();
             String username = currentUser.getEmail();
             System.out.println(username);
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference("purchasedlists");
+            DatabaseReference myRef = database.getReference("purchasedlists").child("randomekey124").child("purchaseditems");
             for (int i = itemsList.size() - 1; i >= 0; i--) {
 
                 ListItem item = itemsList.get(i);
@@ -378,12 +473,26 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
 
 
                 item.setKey(key);
-                updateListItem(i, item, EditListItemDialogFragment.DELETE );
+                updateListItem(i, item, EditBasketListDialogFragment.DELETE );
 
             } // end for
 
 
-
         }
     }
+
+    private void moveItemsToPurchasedList(List<ListItem> items) {
+        // Assuming you have references to the Firebase Database
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = auth.getCurrentUser();
+        String userId = currentUser.getUid();
+        DatabaseReference basketRef = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("ShoppingBasket");
+        DatabaseReference purchasedRef = FirebaseDatabase.getInstance().getReference("purchasedlists").child("randomekey124").child("purchaseditems");
+
+        // Call the adapter method to move items
+        //recyclerAdapter.moveItemsToPurchasedList(items, basketRef, purchasedRef);
+        basketRef.push().setValue(items);
+
+
     }
+}
