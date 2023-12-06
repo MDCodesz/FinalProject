@@ -25,7 +25,6 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Price"
-        android:inputType="phone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

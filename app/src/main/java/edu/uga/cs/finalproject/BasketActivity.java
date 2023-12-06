@@ -27,8 +27,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BasketActivity extends AppCompatActivity implements AddListItemDialogFragment.AddListItemDialogListener,
-        EditBasketListDialogFragment.EditBasketListDialogListener {
+public class BasketActivity extends AppCompatActivity
+        implements EditBasketListDialogFragment.EditBasketListDialogListener {
 
     public static final String DEBUG_TAG = "BasketActivity";
 
@@ -48,7 +48,6 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
 
         recyclerView = findViewById(R.id.recyclerView2);
         Button checkoutButton = findViewById(R.id.button5);
-
         FloatingActionButton floatingButton = findViewById(R.id.floatingActionButton2);
         floatingButton.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -253,9 +252,9 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
 
     // This is our own callback for a DialogFragment which edits an existing ListItem.
     // The edit may be an update or a deletion of this ListItem.
-    // It is called from the EditListItemDialogFragment.
+    // It is called from the EditBasketListDialogFragment.
     public void updateListItem(int position, ListItem ListItem, int action) {
-        if (action == EditListItemDialogFragment.SAVE) {
+        if (action == EditBasketListDialogFragment.SAVE) {
             Log.d(DEBUG_TAG, "Updating job lead at: " + position + "(" + ListItem.getItemName() + ")");
 
             // Update the recycler view to show the changes in the updated job lead in that view
@@ -266,6 +265,7 @@ public class BasketActivity extends AppCompatActivity implements AddListItemDial
             FirebaseAuth auth = FirebaseAuth.getInstance();
             FirebaseUser currentUser = auth.getCurrentUser();
             String userId = currentUser.getUid();
+            Log.d(DEBUG_TAG, "****** user Id " + userId);
             DatabaseReference ref = database
                     .getReference()
                     .child("Users")

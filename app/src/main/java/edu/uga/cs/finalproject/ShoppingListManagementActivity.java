@@ -35,6 +35,7 @@ public class ShoppingListManagementActivity extends AppCompatActivity {
         Button reviewCart = findViewById(R.id.button3);
         Button viewPurchasedListsButton = findViewById(R.id.button4);
         Button logoutButton = findViewById(R.id.button6);
+        Button costButton = findViewById(R.id.buttonCost);
         signedInTextView = findViewById( R.id.textView3 );
 
         newItemButton.setOnClickListener( new NewListItemButtonClickListener() );
@@ -42,6 +43,7 @@ public class ShoppingListManagementActivity extends AppCompatActivity {
         viewPurchasedListsButton.setOnClickListener( new ViewPurchasedListsButtonClickListener() );
         reviewCart.setOnClickListener(new ReviewCartButtonClickListener() );
         logoutButton.setOnClickListener(new LogoutButtonClickListener());
+        costButton.setOnClickListener(new costButtonClickListener());
         // Setup a listener for a change in the sign in status (authentication status change)
         // when it is invoked, check if a user is signed in and update the UI text view string,
         // as needed.
@@ -93,6 +95,14 @@ public class ShoppingListManagementActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), BasketActivity.class);
+            view.getContext().startActivity(intent);
+        }
+    }
+
+    private class costButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(view.getContext(), SettleCostActivity.class);
             view.getContext().startActivity(intent);
         }
     }

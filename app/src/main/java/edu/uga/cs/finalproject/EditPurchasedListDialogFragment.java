@@ -33,7 +33,7 @@ public class EditPurchasedListDialogFragment extends DialogFragment {
 
     // A callback listener interface to finish up the editing of a PurchasedList.
     public interface EditPurchasedListDialogListener {
-        void updatePurchasedListPrice(String purchasedListKey, double newPrice);
+        void updatePurchasedListPrice(String purchasedListKey, String name, double newPrice);
     }
 
     public static EditPurchasedListDialogFragment newInstance(int position, String key, String name, String date, double price) {
@@ -68,7 +68,7 @@ public class EditPurchasedListDialogFragment extends DialogFragment {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View layout = inflater.inflate(R.layout.edit_purchased_list_dialog, getActivity().findViewById(R.id.root));
 
-        nameView = layout.findViewById( R.id.textView1 );
+        nameView = layout.findViewById( R.id.editTextN );
         dateView = layout.findViewById( R.id.textView2 );
 
         priceView = layout.findViewById(R.id.editText1);
@@ -99,6 +99,7 @@ public class EditPurchasedListDialogFragment extends DialogFragment {
     private class SaveButtonClickListener implements DialogInterface.OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int which) {
+            String name = nameView.getText().toString();
             String priceText = priceView.getText().toString();
 
             // Converting the String to a double
@@ -115,7 +116,7 @@ public class EditPurchasedListDialogFragment extends DialogFragment {
             // get the Activity's listener to update the purchased list price
             EditPurchasedListDialogListener listener = (EditPurchasedListDialogListener) getActivity();
             // update the purchased list price
-            listener.updatePurchasedListPrice(key, newPrice);
+            listener.updatePurchasedListPrice(key, name, newPrice);
 
             dismiss();
         }

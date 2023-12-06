@@ -15,6 +15,9 @@
         android:theme="@style/ShoppingListApp"
         tools:targetApi="31">
         <activity
+            android:name=".SettleCostActivity"
+            android:exported="false" />
+        <activity
             android:name=".PurchasedItemActivity"
             android:exported="false" />
         <activity
@@ -23,9 +26,9 @@
         <activity
             android:name=".BasketActivity"
             android:parentActivityName=".ShoppingListManagementActivity">
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".ShoppingListManagementActivity" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ShoppingListManagementActivity" />
         </activity>
         <activity
             android:name=".PurchasedListActivity"

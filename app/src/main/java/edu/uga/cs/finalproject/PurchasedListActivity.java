@@ -100,7 +100,7 @@ public class PurchasedListActivity extends AppCompatActivity
     }
 
 
-    public void updatePurchasedListPrice(String purchasedListKey, double newPrice) {
+    public void updatePurchasedListPrice(String purchasedListKey, String name, double newPrice) {
         DatabaseReference purchasedListRef = database.getReference()
                 .child("purchasedlists")
                 .child(purchasedListKey)
@@ -118,6 +118,28 @@ public class PurchasedListActivity extends AppCompatActivity
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e(DEBUG_TAG, "Failed to update purchased list price: " + e.getMessage());
+                        // Handle the failure scenario, if needed
+                    }
+                });
+
+
+        DatabaseReference purchasedListNameRef = database.getReference()
+                .child("purchasedlists")
+                .child(purchasedListKey)
+                .child("name"); // Reference to the price field under the purchased list
+
+        purchasedListNameRef.setValue(name)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(DEBUG_TAG, "Purchased list name updated successfully");
+                        // Notify user or perform further actions upon successful update
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(DEBUG_TAG, "Failed to update purchased list name: " + e.getMessage());
                         // Handle the failure scenario, if needed
                     }
                 });

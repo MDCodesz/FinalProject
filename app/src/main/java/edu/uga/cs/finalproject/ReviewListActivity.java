@@ -165,7 +165,9 @@ public class ReviewListActivity
 
 
             // Remove from shopping list
-            myRef.child("itemlists").child(itemId).removeValue();
+            //myRef.child("itemlists").child(itemId).removeValue();
+            DatabaseReference myRef2 = database.getReference("itemlists");
+            myRef2.child(itemId).removeValue();
             Log.d("ShoppingListActivity", "ItemIds Removed: " + itemIds);
 
             // Add to shopping basket
