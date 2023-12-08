@@ -58,24 +58,24 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d( DEBUG_TAG, "JobLead: MainActivity.onCreate()" );
         // assigning ID of the toolbar to a variable
-        toolbar = findViewById( R.id.toolbar );
+        //toolbar = findViewById( R.id.toolbar );
         // using toolbar as ActionBar
         //setSupportActionBar( toolbar );
         // Find our drawer view
-        drawerLayout = (DrawerLayout) findViewById( R.id.drawer_layout );
-        drawerToggle = setupDrawerToggle();
-        drawerToggle.setDrawerIndicatorEnabled( true );
-        drawerToggle.syncState();
-
-        // Connect DrawerLayout events to the ActionBarToggle
-        drawerLayout.addDrawerListener( drawerToggle );
-        // Find the drawer view
-        navigationView = findViewById( R.id.nvView );
-        navigationView.setNavigationItemSelectedListener(
-                menuItem -> {
-                    selectDrawerItem( menuItem );
-                    return true;
-                });
+//        drawerLayout = (DrawerLayout) findViewById( R.id.drawer_layout );
+//        drawerToggle = setupDrawerToggle();
+//        drawerToggle.setDrawerIndicatorEnabled( true );
+//        drawerToggle.syncState();
+//
+//        // Connect DrawerLayout events to the ActionBarToggle
+//        drawerLayout.addDrawerListener( drawerToggle );
+//        // Find the drawer view
+//        navigationView = findViewById( R.id.nvView );
+//        navigationView.setNavigationItemSelectedListener(
+//                menuItem -> {
+//                    selectDrawerItem( menuItem );
+//                    return true;
+//                });
 
         Button signInButton = findViewById( R.id.button1 );
         Button registerButton = findViewById( R.id.button2 );
@@ -83,59 +83,59 @@ public class MainActivity extends AppCompatActivity {
         signInButton.setOnClickListener( new SignInButtonClickListener() );
         registerButton.setOnClickListener( new RegisterButtonClickListener() );
     }
-    public void selectDrawerItem( MenuItem menuItem ) {
-        Intent intent = null;
-
-        // Create a new fragment based on the used selection in the nav drawer
-        int itemId = menuItem.getItemId();
-        if (itemId == R.id.menu_list) {
-            intent = new Intent(this, ReviewListActivity.class);
-        } else if(itemId == R.id.menu_register) {
-            intent = new Intent(this, RegisterActivity.class);
-        }else if(itemId == R.id.menu_basket) {
-            intent = new Intent(this, BasketActivity.class);
-        }else {
-            return;
-        }
-
-        startActivity(intent);
-
-        /*
-        // this is included here as a possible future modification
-        // Highlight the selected item has been done by NavigationView
-        menuItem.setChecked( true );
-        // Set action bar title
-        setTitle( menuItem.getTitle());
-         */
-
-        // Close the navigation drawer
-        drawerLayout.closeDrawers();
-    }
-    private ActionBarDrawerToggle setupDrawerToggle() {
-        // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
-        // and will not render the hamburger icon without it.
-        return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.nav_open,  R.string.nav_close);
-    }
-    @Override
-    protected void onPostCreate( Bundle savedInstanceState ) {
-        super.onPostCreate( savedInstanceState );
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        drawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged( @NonNull Configuration newConfig ) {
-        super.onConfigurationChanged( newConfig );
-        // Pass any configuration change to the drawer toggles
-        drawerToggle.onConfigurationChanged( newConfig );
-    }
-    @Override
-    public boolean onOptionsItemSelected( MenuItem item ) {
-        if( drawerToggle.onOptionsItemSelected( item ) ) {
-            return true;
-        }
-        return super.onOptionsItemSelected( item );
-    }
+//    public void selectDrawerItem( MenuItem menuItem ) {
+//        Intent intent = null;
+//
+//        // Create a new fragment based on the used selection in the nav drawer
+//        int itemId = menuItem.getItemId();
+//        if (itemId == R.id.menu_list) {
+//            intent = new Intent(this, ReviewListActivity.class);
+//        } else if(itemId == R.id.menu_register) {
+//            intent = new Intent(this, RegisterActivity.class);
+//        }else if(itemId == R.id.menu_basket) {
+//            intent = new Intent(this, BasketActivity.class);
+//        }else {
+//            return;
+//        }
+//
+//        startActivity(intent);
+//
+//        /*
+//        // this is included here as a possible future modification
+//        // Highlight the selected item has been done by NavigationView
+//        menuItem.setChecked( true );
+//        // Set action bar title
+//        setTitle( menuItem.getTitle());
+//         */
+//
+//        // Close the navigation drawer
+//        drawerLayout.closeDrawers();
+//    }
+//    private ActionBarDrawerToggle setupDrawerToggle() {
+//        // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
+//        // and will not render the hamburger icon without it.
+//        return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.nav_open,  R.string.nav_close);
+//    }
+//    @Override
+//    protected void onPostCreate( Bundle savedInstanceState ) {
+//        super.onPostCreate( savedInstanceState );
+//        // Sync the toggle state after onRestoreInstanceState has occurred.
+//        drawerToggle.syncState();
+//    }
+//
+//    @Override
+//    public void onConfigurationChanged( @NonNull Configuration newConfig ) {
+//        super.onConfigurationChanged( newConfig );
+//        // Pass any configuration change to the drawer toggles
+//        drawerToggle.onConfigurationChanged( newConfig );
+//    }
+//    @Override
+//    public boolean onOptionsItemSelected( MenuItem item ) {
+//        if( drawerToggle.onOptionsItemSelected( item ) ) {
+//            return true;
+//        }
+//        return super.onOptionsItemSelected( item );
+//    }
 
     // A button listener class to start a Firebase sign-in process
     private class SignInButtonClickListener implements View.OnClickListener {

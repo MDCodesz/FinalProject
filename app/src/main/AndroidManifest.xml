@@ -19,7 +19,11 @@
             android:exported="false" />
         <activity
             android:name=".PurchasedItemActivity"
-            android:exported="false" />
+            android:parentActivityName=".PurchasedListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".PurchasedListActivity" />
+        </activity>
         <activity
             android:name=".BasketRecyclerAdapter"
             android:exported="false" />
